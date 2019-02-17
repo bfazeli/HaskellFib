@@ -1,9 +1,12 @@
+import Debug.Trace
+
 -- data type
-data MemberType = IntType Int | StringType String deriving (Ord, Eq, Show)  
+data MemberType = IntType Int | StringType String deriving (Ord, Eq, Show)
 
 type Collection = [MemberType]
 instance Num MemberType where 
     (IntType a) + (IntType b) = IntType (a + b)
+    (IntType a) - (IntType b) = IntType (a - b)
 
 -- arr::Collection
 -- arr = [IntType 1, IntType 2, StringType "Herro", IntType 5]
@@ -36,8 +39,24 @@ fibBottomUpIter n =
 --
 
 -- fibTopDownIter
-fibTopDownIter
+fibAction:: ([MemberType], [MemberType]) -> ([MemberType], [MemberType])
+fibAction state
+    | (head (fst state) /= StringType "fib") && (head (fst state) /= StringType "+") =
+        -- trace("The value of state is: " ++ show state)   -- Toggle the comment on this line to trace
+        (tail (fst state), head (fst state) : snd state)
+    | head (fst state) == StringType "fib" =
+        if head (snd state) <= IntType 2 then (IntType 1 : tail (fst state), tail(snd state))
+        else ([ head (snd state) - IntType 2, StringType "fib", head (snd state) - IntType 1, StringType "fib", StringType "+" ] ++ tail (fst state), tail(snd state))
+    | otherwise =
+        ((head (snd state) + head (tail(snd state))) : tail (fst state), tail(tail(snd state)))
 
+fibTopDownIter:: Int -> Int
+fibTopDownIter n =
+    while
+        ([IntType n, StringType "fib"], [])
+        (not . (null . fst))
+        fibAction
+        (head . snd)
 --
 
 -- main execution of program
@@ -45,5 +64,6 @@ main :: IO()
 main = 
     print(fibTopDownRec 6) >>
     print(fibBottomUpIter 6) >>
-    print(head arr + head (tail arr))
+    print(fibTopDownIter 4)
 --
+
