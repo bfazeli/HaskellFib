@@ -8,6 +8,8 @@ instance Num MemberType where
     (IntType a) + (IntType b) = IntType (a + b)
     (IntType a) - (IntType b) = IntType (a - b)
 
+fromIntTypeToInt (IntType a) = a
+
 -- arr::Collection
 -- arr = [IntType 1, IntType 2, StringType "Herro", IntType 5]
 --
@@ -55,13 +57,13 @@ fibAction state
 --
 
 
--- fibTopDownIter:: Int -> MemberType
+fibTopDownIter:: Int -> Int
 fibTopDownIter n =
     while
         ([IntType n, StringType "fib"], [])
         (not . (null . fst))
         fibAction
-        (head . snd)
+        (fromIntTypeToInt . (head . snd))
 --
 
 
@@ -77,26 +79,26 @@ expandInput k =
 fibAction1:: ([MemberType], [MemberType]) -> ([MemberType], [MemberType])
 fibAction1 state
     | (head (fst state) /= StringType "fib") && (head (fst state) /= StringType "+") =
-        trace("The value of state is: " ++ show state)   -- Toggle the comment on this line to trace
+        -- trace("The value of state is: " ++ show state)   -- Toggle the comment on this line to trace
         (tail (fst state), head (fst state) : snd state)
     | head (fst state) == StringType "fib" =
         if head(snd state) > IntType 2 then 
-            trace("The value of state is: " ++ show state)
+            -- trace("The value of state is: " ++ show state)
             (expandInput (head (snd state)) ++ tail(fst state), IntType 1 : tail (snd state))
         else 
-            trace("The value of state is: " ++ show state)
+            -- trace("The value of state is: " ++ show state)
             (tail (fst state), IntType 1: tail(snd state))
     | otherwise =
-        trace("The value of state is: " ++ show state)
+        -- trace("The value of state is: " ++ show state)
         (tail (fst state), (head (snd state) + head(tail (snd state))) : tail(tail(snd state)))
 
-fibTopDownIterWithOpt1:: Int -> MemberType
+fibTopDownIterWithOpt1:: Int -> Int
 fibTopDownIterWithOpt1 n =
     while
         ([IntType n, StringType "fib"], [])
         (not . (null . fst))
         fibAction1
-        (head . snd)
+        (fromIntTypeToInt . (head . snd))
 --
 
 
@@ -114,9 +116,9 @@ fibTopDownIterWithOpt2 n =
 -- main execution of program
 main :: IO()
 main = 
-    print(fibTopDownRec 6) >>
-    print(fibBottomUpIter 6) >>
-    print(fibTopDownIter 6) >>
-    print(fibTopDownIterWithOpt1 6) >>
-    print(fibTopDownIterWithOpt2 6)
+    print("Calling fibTopDownRec: " ++ show (fibTopDownRec 6)) >>
+    print("Calling fibBottomUpIter: " ++ show (fibBottomUpIter 6)) >>
+    print("Calling fibTopDownIter: " ++ show (fibTopDownIter 6)) >>
+    print("Calling fibTopDownIterWithOpt1: " ++ show (fibTopDownIterWithOpt1 6)) >>
+    print("Calling fibTopDownIterWithOpt2: " ++ show (fibTopDownIterWithOpt2 6))
 --
