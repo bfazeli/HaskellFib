@@ -100,11 +100,23 @@ fibTopDownIterWithOpt1 n =
 --
 
 
+-- fibTopDownIterWithOpt2
+fibTopDownIterWithOpt2:: Int -> Int
+fibTopDownIterWithOpt2 n =
+    while
+        (n, 1, 0)
+        (\(n, _, _) -> n >= 2)
+        (\(n, ka, kb) -> (n-1, ka+kb, ka))
+        (\(n, ka, kb) -> ka)
+--
+
+
 -- main execution of program
 main :: IO()
 main = 
     print(fibTopDownRec 6) >>
     print(fibBottomUpIter 6) >>
     print(fibTopDownIter 6) >>
-    print(fibTopDownIterWithOpt1 6)
+    print(fibTopDownIterWithOpt1 6) >>
+    print(fibTopDownIterWithOpt2 6)
 --
